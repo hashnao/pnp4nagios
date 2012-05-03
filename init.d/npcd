@@ -1,0 +1,95 @@
+#!/bin/sh
+#
+### BEGIN INIT INFO
+# Short-Description: pnp4nagios NPCD Daemon Version 0.6.16
+# Description: Nagios Performance Data C Daemon
+# chkconfig: 345 99 01
+# processname: npcd
+# config: /usr/local/pnp4nagios/etc/npcd.cfg
+# pidfile: /var/run/npcd.pid
+# Provides:          npcd
+# Required-Start:    
+# Required-Stop:     
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+user="icinga"
+prog="npcd"
+prefix="/usr/local/pnp4nagios"
+exec_prefix="${prefix}"
+exec="${prefix}/bin/$prog"
+config="${prefix}/etc/$prog.cfg"
+piddir="/var/run"
+lockdir="/var/lock/subsys"
+pidfile="/var/run/$prog.pid"
+lockfile="${lockdir}/$prog"
+
+[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+
+start() {
+    [ -x $exec ] || exit 5
+    [ -f $config ] || exit 6
+    echo -n $"Starting $prog: "
+    daemon --user=$user $exec -d -f $config
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc -d 10 $exec
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile $pidfile
+    return $retval
+}
+
+
+restart() {
+    stop
+    start
+}
+
+reload() {
+    echo -n $"Reloading $prog: "
+    killproc $exec -HUP
+    retval=$?
+    echo
+}
+
+
+case "$1" in
+    start)
+        status $prog && exit 0
+        $1
+        ;;
+    stop)
+        status $prog|| exit 0
+        $1
+        ;;
+    restart)
+        $1
+        ;;
+    reload)
+        status $prog || exit 7
+        $1
+        ;;
+    status)
+        status $prog
+        ;;
+    condrestart)
+        status $prog|| exit 0
+        restart
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|reload}"
+        exit 2
+esac
+exit $?
+
