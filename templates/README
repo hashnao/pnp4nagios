@@ -1,0 +1,326 @@
+# This is about pnp4nagios custom template, 
+# and their command and service definitions
+
+## check_apache_performance.php
+* plugin
+http://blog.spreendigital.de/nagios/?#check_apachestatus_auto
+
+* commands.cfg
+  define command{
+	command_name    check_apache_performance
+	command_line    $USER1$/check_apachestatus_auto.pl -t $ARG1$ -H 127.0.0.1
+	}
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	Apache:Performance
+	check_command		check_apache_performance!60
+ }
+
+## check_connections.php
+* plugin
+http://exchange.nagios.org/directory/Plugins/System-Metrics/Networking/check_connections/details
+
+* commands.cfg
+  define command{
+	command_name	check_connections
+	command_line	$USER1$/check_connections -t $ARG1$ -w $ARG2$ -c $ARG3$
+ }
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	Connection
+	check_command		check_connections!10!100!200
+ }
+
+## check_cpu.php
+* plugin
+http://exchange.nagios.org/directory/Plugins/Operating-Systems/Solaris/check_cpu/details
+
+* commands.cfg
+  define command{
+	command_name    check_cpu
+	command_line    $USER1$/check_cpu -w $ARG1$ -c $ARG2$
+	}
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	CPU
+	check_command		check_cpu!30!10
+ }
+
+## check_disk.php
+* plugin
+Nagios-Plugin(default)
+
+* commands.cfg
+  define command{
+	command_name    check_disk
+	command_line    $USER1$/check_disk -t $ARG1$ -l -m -w $ARG2$ -c $ARG3$ -p $ARG4$
+	}
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	DISK:/
+	check_command		check_disk!60!30%!10%!/
+ }
+
+## check_diskio.php
+* plugin
+http://exchange.nagios.org/directory/Plugins/Operating-Systems/Linux/check_diskio/details
+
+* commands.cfg
+  define command{
+	command_name    check_disk_inode
+	command_line    $USER1$/check_disk -t $ARG1$ -l -m -W $ARG2$ -K $ARG3$ -A -i "$ARG4$" -i "$ARG4$"
+	}
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	DISKI/O:/dev/sda
+	check_command		check_diskio!60!10000000!20000000!/dev/sda
+ }
+
+## check_http.php
+* plugin
+Nagios-Plugin(default)
+
+* commands.cfg
+  define command{
+	command_name	check_http
+	command_line	$USER1$/check_http -H $HOSTADDRESS$ -p $ARG1$ -t $ARG2$ -c $ARG3$ -u "$ARG4$"
+ }
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	HTTP
+	check_command		check_http!80!10!5!/
+ }
+
+## check_load.php
+* plugin
+Nagios-Plugin(default)
+
+* commands.cfg
+  define command{
+	command_name    check_load
+	command_line    $USER1$/check_load -w $ARG1$ -c $ARG2$
+	}
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	LOADAVERAGE
+	check_command		check_load!5,5,5!5,5,5
+ }
+
+## check_mem.php
+* plugin
+http://exchange.nagios.org/directory/Plugins/System-Metrics/Memory/check_mem-2Epl/details
+
+* commands.cfg
+  define command{
+	command_name    check_mem
+	command_line    $USER1$/check_mem.pl -C -u -w $ARG1$ -c $ARG2$
+ }
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MEMORY
+	check_command		check_mem!70!90
+ }
+
+## check_mysql_health.php
+* plugin
+http://exchange.nagios.org/directory/MySQL/check_mysql_health/details
+
+* commands.cfg
+  define command{
+	command_name    check_mysql_health
+	command_line    $USER1$/check_mysql_health --username $USER11$ --password $USER12$ --hostname $HOSTADDRESS$ --port $ARG1$ -t $ARG2$ --mode "$ARG3$" --warning $ARG4$ --critical $ARG5$
+	}
+
+* services.cfg
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL
+	check_command		check_mysql_health!3306!10!connection-time!10!10
+ }
+
+## check_icinga_latency_service.php
+* plugin
+http://exchange.nagios.org/directory/Plugins/System-Metrics/Performance/check_nagiostats/details
+
+* commands.cfg
+  define command{
+	command_name    check_nagios_latency_host
+	command_line    $USER1$/check_nagiostats -f /usr/local/icinga/var/status.dat -o -w $ARG1$ -c $ARG2$
+	}
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	Icinga:ServiceLatency
+	check_command		check_icinga_latency_service!30!60
+ }
+
+## check_postgres.php
+* plugin
+http://exchange.nagios.org/directory/Plugins/Databases/PostgresQL/check_postgres/details
+
+* commands.cfg
+  define command{
+	command_name    check_postgres
+	command_line    $USER1$/libexec/check_postgres.pl -u $USER13$ --dbpass=$USER14$ -H $HOSTADDRESS$ -p $ARG1$ -t $ARG2$ --action "$ARG3$" -w $ARG4$ -c $ARG5$
+	}
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	Postgres
+	check_command		check_postgres!5436!10!connection!100!200
+ }
+
+
+## check_traffic.php
+* plugin
+http://exchange.nagios.org/directory/Plugins/Network-Connections,-Stats-and-Bandwidth/check_tcptraffic/details
+
+* commands.cfg
+  define command{
+	command_name    check_traffic
+	command_line    $USER1$/check_tcptraffic -t $ARG1$ -s 1000 -w $ARG2$ -c $ARG3$ -i $ARG4$
+	}
+
+* services.cfg
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	TRAFFIC:eth0
+	check_command		check_traffic!60!10000000!20000000!eth0
+ }
+
+
+## check_mysql_health.php
+
+* other service definitions for mysql of services.cfg
+
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Threads_connected
+	check_command		check_mysql_health!3306!10!threads-connected!100!200
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Threads_cached_rate
+	check_command		check_mysql_health!3306!10!threadcache-hitrate!100!100
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Threads_created
+	check_command		check_mysql_health!3306!10!threads-created!100!200
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Threads_running
+	check_command		check_mysql_health!3306!10!threads-running!100!200
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Threads_cached
+	check_command		check_mysql_health!3306!10!threads-cached!300!500
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Aborted_connects
+	check_command		check_mysql_health!3306!10!connects-aborted!10!30
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Aborted_clients
+	check_command		check_mysql_health!3306!10!clients-aborted!10!30
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Qcache_hits_rate
+	check_command		check_mysql_health!3306!10!qcache-hitrate!100!100
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Qcache_lowmem_prunes
+	check_command		check_mysql_health!3306!10!qcache-lowmem-prunes!0!0
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:index_usage
+	check_command		check_mysql_health!3306!10!index-usage!100!100
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Table_lock_rate
+	check_command		check_mysql_health!3306!10!table-lock-contention!100!100
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Open_files
+	check_command		check_mysql_health!3306!10!open-files!70!90
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:Slow_queries
+	check_command		check_mysql_health!3306!10!slow-queries!1!5
+ }
+  define  service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	MySQL:LongRunningProcs
+	check_command		check_mysql_health!3306!10!long-running-procs!10!30
+ }
+
+## check_postgres.php
+
+* other service definitions for mysql of services.cfg
+
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	Postgres
+	check_command		check_postgres!5436!10!backends!100!200
+ }
+  define	service{
+	use			generic-service
+	host_name		<hostname>
+	service_description	Postgres
+	check_command		check_postgres!5436!10!hot_standby_delay!100!200
+ }
