@@ -1,6 +1,6 @@
 <?php
 $this->MACRO['TITLE']   = "LOADAVERAGE";
-$this->MACRO['COMMENT'] = "For WEB Servers";
+$this->MACRO['COMMENT'] = "For All Servers";
 $services = $this->tplGetServices("","LOADAVERAGE$");
 #throw new Kohana_exception(print_r($services,TRUE));
 # The Datasource Name for Graph 0
