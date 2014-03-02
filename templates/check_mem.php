@@ -21,7 +21,7 @@ $def[1] .= rrd::line1("var1", "#000000", "Total") ;
 $def[1] .= rrd::gprint("var1", array("LAST", "AVERAGE", "MAX"), "%6.2lf");
 $def[1] .= rrd::area("var2", "#ff0000", "Used") ;
 $def[1] .= rrd::gprint("var2", array("LAST", "AVERAGE", "MAX"), "%6.2lf");
-$def[1] .= rrd::area("var3", "#5a3d99", "Free") ;
+$def[1] .= rrd::area("var3", "#5a3d99", "Free", $stack=True) ;
 $def[1] .= rrd::gprint("var3", array("LAST", "AVERAGE", "MAX"), "%6.2lf");
 $def[1] .= rrd::area("var4", "#e5ca44", "Cache") ;
 $def[1] .= rrd::gprint("var4", array("LAST", "AVERAGE", "MAX"), "%6.2lf");
